@@ -6,6 +6,10 @@ if [ $# -eq 0 ] ; then
    exit 0
 fi
 
+rpmsystem=$(hostname)
+rpmsystem=${rpmsystem#*.} # remove build or staff
+rpmsystem=${rpmsystem%%.*} # remove tacc.utexas.edu
+
 version=git
 if [ $1 = "-v" ] ; then
     shift && version=$1 && shift
@@ -13,8 +17,8 @@ fi
 
 ## set -x
 package=$1
-rpms=/admin/build/admin/rpms/stampede3
-scripts=${rpms}/SPECS/rpmtng
+rpms=/admin/build/admin/rpms/${rpmsystem}
+scripts=${rpms}/SPECS/RPMtheNextGeneration
 sources=${rpms}/SOURCES
 
 if [ ! -d ${scripts}/makefiles/$package ] ; then

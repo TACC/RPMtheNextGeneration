@@ -1,2 +1,5 @@
-export PATH=/admin/build/admin/rpms/stampede3/SPECS/rpmtng/MrPackMod:${PATH}
-export PYTHONPATH=/admin/build/admin/rpms/stampede3/SPECS/rpmtng:${PYTHONPATH}
+rpmsystem=$(hostname)
+rpmsystem=${rpmsystem#*.} # remove build or staff
+rpmsystem=${rpmsystem%%.*} # remove tacc.utexas.edu
+export PATH=/admin/build/admin/rpms/${rpmsystem}/SPECS/RPMtheNextGeneration/MrPackMod:${PATH}
+export PYTHONPATH=/admin/build/admin/rpms/${rpmsystem}/SPECS/RPMtheNextGeneration:${PYTHONPATH}

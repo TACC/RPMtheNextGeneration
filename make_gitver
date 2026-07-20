@@ -1,6 +1,10 @@
 #!/bin/bash
 # -*- sh -*-
 
+rpmsystem=$(hostname)
+rpmsystem=${rpmsystem#*.} # remove build or staff
+rpmsystem=${rpmsystem%%.*} # remove tacc.utexas.edu
+
 if [ $# -eq 0 -o "$1" = "-h" ] ; then
    echo "Usage: make_download [ -v version ] [ -z (for zip) ] package"
    exit 0
@@ -20,7 +24,7 @@ done
 
 ## set -x
 package=$1
-rpms=/admin/build/admin/rpms/stampede3
+rpms=/admin/build/admin/rpms/${rpmsystem}
 scripts=${rpms}/SPECS/victor_scripts
 sources=${rpms}/SOURCES
 

@@ -1,6 +1,10 @@
 #!/bin/bash
 # -*- sh -*-
 
+rpmsystem=$(hostname)
+rpmsystem=${rpmsystem#*.} # remove build or staff
+rpmsystem=${rpmsystem%%.*} # remove tacc.utexas.edu
+
 function usage () {
     echo "Usage: make_download [ -c Configuration ] [ -v version ] [ -z (for zip) ] package"
 }
@@ -29,8 +33,8 @@ package=$1
 if [ -z "$package" ] ; then
     usage && exit 1
 fi
-rpms=/admin/build/admin/rpms/stampede3
-scripts=${rpms}/SPECS/rpmtng
+rpms=/admin/build/admin/rpms/${rpmsystem}
+scripts=${rpms}/SPECS/RPMtheNextGeneration
 
 if [ ! -d ${scripts}/makefiles/$package ] ; then
     echo "Could not find directory: $package"
