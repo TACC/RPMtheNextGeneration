@@ -39,7 +39,7 @@ fi
 ##
 cd tacc_specfiles
 system=$( hostname )
-system=${system#build.}
+system=${system#*.} # sometimes it's build, sometimes staff
 system=${system%.tacc.utexas.edu}
 if [ ! -f "${system}.sh" ] ; then
     echo "Trouble finding specialization script for system=<<${system}>> in $(pwd)"
