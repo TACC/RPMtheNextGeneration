@@ -1,0 +1,2 @@
+export PATH=/admin/build/admin/rpms/stampede3/SPECS/rpmtng/MrPackMod:${PATH}
+export PYTHONPATH=/admin/build/admin/rpms/stampede3/SPECS/rpmtng:${PYTHONPATH}

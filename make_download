@@ -1,0 +1,65 @@
+#!/bin/bash
+# -*- sh -*-
+
+function usage () {
+    echo "Usage: make_download [ -c Configuration ] [ -v version ] [ -z (for zip) ] package"
+}
+
+if [ $# -eq 0 -o "$1" = "-h" ] ; then
+   exit 0
+fi
+
+configuration=
+zip=0
+while [ $# -gt 1 ] ; do
+    if [ "$1" = "-h" ] ; then
+        echo "Usage: make_download [ -v version ] [ -z ] package"
+        exit 0
+    elif [ "$1" = "-c" ] ; then
+        shift && configuration=$1 && shift
+    elif [ "$1" = "-v" ] ; then
+        shift && version=$1 && shift
+    elif [ "$1" = "-z" ] ; then
+        zip=1 && shift
+    fi
+done
+
+## set -x
+package=$1
+if [ -z "$package" ] ; then
+    usage && exit 1
+fi
+rpms=/admin/build/admin/rpms/stampede3
+scripts=${rpms}/SPECS/rpmtng
+
+if [ ! -d ${scripts}/makefiles/$package ] ; then
+    echo "Could not find directory: $package"
+    exit 1
+fi
+
+export PATH=$(pwd)/MrPackMod:${PATH}
+export PYTHONPATH=$(pwd):${PYTHONPATH}
+cd ${scripts}/makefiles/$package
+set -x
+
+# From now on only MrPackMod installations
+
+## if [ -f Configuration ] ; then
+    DOWNLOADPATH=${rpms}/SOURCES \
+	 TACC_FAMILY_COMPILER=intel \
+	 PACKAGEROOT=${rpms} PACKAGE=${package} \
+	 $( if [ ! -z "${version}" ] ; then echo "PACKAGEVERSION=${version}" ; fi ) \
+	 mpm.py -t \
+	     $( if [ ! -z "${configuration}" ] ; then echo "-c ${configuration}" ; fi ) \
+	     download unpack retar
+
+# else
+#     make DOWNLOADPATH=${rpms}/SOURCES V=1 ECHO=1 \
+# 	 TACC_FAMILY_COMPILER=intel \
+# 	 MAKEINCLUDES=${scripts}/make-support-files \
+# 	 PACKAGEROOT=${rpms} PACKAGE=${package} \
+# 	 $( if [ ! -z "${version}" ] ; then echo "PACKAGEVERSION=${version}" ; fi ) \
+# 	 download \
+# 	 $( if [ $zip -eq 1 ] ; then echo unpack ; else echo untar ; fi ) \
+# 	 retar
+# fi

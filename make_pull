@@ -1,0 +1,39 @@
+#!/bin/bash
+# -*- sh -*-
+
+if [ $# -eq 0 ] ; then
+   echo "Usage: make_pull [ -v version (default: git) ] package"
+   exit 0
+fi
+
+version=git
+if [ $1 = "-v" ] ; then
+    shift && version=$1 && shift
+fi
+
+## set -x
+package=$1
+rpms=/admin/build/admin/rpms/stampede3
+scripts=${rpms}/SPECS/rpmtng
+sources=${rpms}/SOURCES
+
+if [ ! -d ${scripts}/makefiles/$package ] ; then
+    echo "Could not find directory: $package"
+    exit 1
+fi
+
+cd ${scripts}/makefiles/$package
+make DOWNLOADPATH=${rpms}/SOURCES \
+    MAKEINCLUDES=${scripts}/make-support-files \
+    PACKAGEROOT=${rpms} \
+    $( if [ ! -z "${version}" ] ; then echo "PACKAGEVERSION=${version}" ; fi ) \
+    newclone betar
+
+# cd $sources
+# rightnow=$( date +%Y%m%d )
+# todaysgit=${package}-git${rightnow}
+# rm -rf ${todaysgit}*
+# cp -r ${package}-git ${todaysgit}
+# tar fcz ${todaysgit}.tgz ${todaysgit}
+# echo "Dated tar file: ${todaysgit}.tgz"
+# ls -l ${todaysgit}.tgz

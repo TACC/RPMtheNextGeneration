@@ -1,0 +1,49 @@
+#!/bin/bash
+# -*- sh -*-
+
+if [ $# -eq 0 -o "$1" = "-h" ] ; then
+   echo "Usage: make_download [ -v version ] [ -z (for zip) ] package"
+   exit 0
+fi
+
+zip=0
+while [ $# -gt 1 ] ; do
+    if [ "$1" = "-h" ] ; then
+        echo "Usage: make_download [ -v version ] [ -z ] package"
+        exit 0
+    elif [ "$1" = "-z" ] ; then
+        zip=1 && shift
+    elif [ "$1" = "-v" ] ; then
+        shift && version=$1 && shift
+    fi
+done
+
+## set -x
+package=$1
+rpms=/admin/build/admin/rpms/stampede3
+scripts=${rpms}/SPECS/victor_scripts
+sources=${rpms}/SOURCES
+
+if [ ! -d ${scripts}/makefiles/$package ] ; then
+    echo "Could not find directory: $package"
+    exit 1
+fi
+
+cd ${scripts}/makefiles/$package
+if [ -d "${rpms}/SOURCES/octopus-git" ] ; then
+    action="pull"
+else
+    action="clone"
+fi
+echo && echo "${action} ${package}" && echo
+make DOWNLOADPATH=${rpms}/SOURCES \
+    MAKEINCLUDES=${scripts}/make-support-files \
+    PACKAGEROOT=${rpms} \
+    ${action} 
+echo && echo "betar ${package}" && echo
+make DOWNLOADPATH=${rpms}/SOURCES \
+    HOMEDIR=${rpms}/SOURCES \
+    MAKEINCLUDES=${scripts}/make-support-files \
+    PACKAGEROOT=${rpms} \
+    betar
+
