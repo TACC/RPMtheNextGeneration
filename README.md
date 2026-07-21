@@ -39,15 +39,26 @@ With all this in place, you can now generate rpms. This relies on McLay's `build
   Make sure this is in sync with the version number in the spec file.
   (Sorry, I have no idea how to keep this synced automatically.)
 - Call `./tacc_specfiles/${system}_specfiles/install.sh -m yourpackage`
+  The `-m` flag adds an MPI flag to `build_rpm.sh` but it doesn't hurt if that's not used.
 - This will loop through all available compilers and generate the rpm for that package, that compiler.
   The list of available rpms (for the exact version and release) is given at the end of the install process. 
   You can cut and paste this into a collab ticket.
 - If the installation failed, you can find the full log in `tacc_specfiles/${system}_specfiles/yourpackage*log`.
   The failure can be an rpm problem, MrPackMod problems, compilation problems, you name it. Debugging time!
-- If you want to install only for a certain compiler, do ```[stuff]/install.sh -c g -v 15 yourpackage```
-  where `g` is for GNU, `i` for Intel, `n` for NVidia, 
+- If you want to install only for a certain compiler, specify the compiler with the `-c` flag and its version with `-v`.
+  Example:
+```
+[stuff]/install.sh -c g -v 15 yourpackage
+```
+- Here `g` is for GNU, `i` for Intel, `n` for NVidia, 
   and the version number you supply matches the start of the actual 
   compiler version: `15` matches `15.1.0` et cetera.
+- For some packages the spec file name and package name are not the same.
+  In that case the `-p` flag can be used to indicate the package name. Example:
+```
+[stuff]/install.sh -p hdf5  hdf5-seq
+[stuff]/install.sh -p phdf5 hdf5-par
+```
 
 ## Writing and editing spec files
 
