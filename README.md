@@ -8,7 +8,10 @@ Here are the basic repositories you need:
 
 ## Local installation
 
-You install packages locally, including generating modules, if you set a couple of environment variables.
+You can install packages locally, including generating modules, if you set a couple of environment variables.
+It's a good idea to install locally so that you can test. 
+Testing and debugging an installation is a lot harder in jail.
+
 See the readme in the basic repository.
 
 ## TACC rpm generation in `jail'
