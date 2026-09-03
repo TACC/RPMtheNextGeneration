@@ -44,26 +44,26 @@ fi
 export PATH=$(pwd)/MrPackMod:${PATH}
 export PYTHONPATH=$(pwd):${PYTHONPATH}
 cd ${scripts}/makefiles/$package
-set -x
 
 # From now on only MrPackMod installations
 
-## if [ -f Configuration ] ; then
+pkgversion=$( \
     DOWNLOADPATH=${rpms}/SOURCES \
-	 TACC_FAMILY_COMPILER=intel \
-	 PACKAGEROOT=${rpms} PACKAGE=${package} \
-	 $( if [ ! -z "${version}" ] ; then echo "PACKAGEVERSION=${version}" ; fi ) \
-	 mpm.py -t \
-	     $( if [ ! -z "${configuration}" ] ; then echo "-c ${configuration}" ; fi ) \
-	     download unpack retar
+         TACC_FAMILY_COMPILER=intel \
+         PACKAGEROOT=${rpms} PACKAGE=${package} \
+         mpm.py version \
+         )
+if [ ! -z "${version}" ] ; then
+    pkgversion=${version}
+fi
 
-# else
-#     make DOWNLOADPATH=${rpms}/SOURCES V=1 ECHO=1 \
-# 	 TACC_FAMILY_COMPILER=intel \
-# 	 MAKEINCLUDES=${scripts}/make-support-files \
-# 	 PACKAGEROOT=${rpms} PACKAGE=${package} \
-# 	 $( if [ ! -z "${version}" ] ; then echo "PACKAGEVERSION=${version}" ; fi ) \
-# 	 download \
-# 	 $( if [ $zip -eq 1 ] ; then echo unpack ; else echo untar ; fi ) \
-# 	 retar
-# fi
+DOWNLOADPATH=${rpms}/SOURCES \
+ TACC_FAMILY_COMPILER=intel \
+ PACKAGEROOT=${rpms} PACKAGE=${package} \
+ PACKAGEVERSION=${pkgversion} \
+ PACKAGEVERSION_DOWNLOAD=${pkgversion} \
+ mpm.py -t \
+     $( if [ ! -z "${configuration}" ] ; then echo "-c ${configuration}" ; fi ) \
+     download unpack retar
+
+
