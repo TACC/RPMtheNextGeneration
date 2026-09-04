@@ -6,11 +6,11 @@ rpmsystem=${rpmsystem#*.} # remove build or staff
 rpmsystem=${rpmsystem%%.*} # remove tacc.utexas.edu
 
 function usage () {
-    echo "Usage: make_download [ -c Configuration ] [ -v version ] [ -z (for zip) ] package"
+    echo "Usage: make_download [ -c Configuration ] [ -v version ] [ -w downloadversion ] [ -z (for zip) ] package"
 }
 
 if [ $# -eq 0 -o "$1" = "-h" ] ; then
-   exit 0
+   usage && exit 0
 fi
 
 configuration=
@@ -23,6 +23,8 @@ while [ $# -gt 1 ] ; do
         shift && configuration=$1 && shift
     elif [ "$1" = "-v" ] ; then
         shift && version=$1 && shift
+    elif [ "$1" = "-w" ] ; then
+        shift && downloadversion=$1 && shift
     elif [ "$1" = "-z" ] ; then
         zip=1 && shift
     fi
@@ -56,12 +58,16 @@ pkgversion=$( \
 if [ ! -z "${version}" ] ; then
     pkgversion=${version}
 fi
+if [ -z "${downloadversion}" ] ; then
+    downloadversion=${pkgversion}
+fi
+    
 
 DOWNLOADPATH=${rpms}/SOURCES \
  TACC_FAMILY_COMPILER=intel \
  PACKAGEROOT=${rpms} PACKAGE=${package} \
  PACKAGEVERSION=${pkgversion} \
- PACKAGEVERSION_DOWNLOAD=${pkgversion} \
+ PACKAGEVERSION_DOWNLOAD=${downloadversion} \
  mpm.py -t \
      $( if [ ! -z "${configuration}" ] ; then echo "-c ${configuration}" ; fi ) \
      download unpack retar
