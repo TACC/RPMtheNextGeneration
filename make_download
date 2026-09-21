@@ -1,6 +1,15 @@
 #!/bin/bash
 # -*- sh -*-
 
+system=$( hostname )
+system=${system#*.}
+system=${system%%.*}
+if [ "${system}" = "ls6" ] ; then
+    PATH=/opt/apps/python/3.12.11/bin/:${PATH}
+    PYTHONPATH=/opt/apps/python/3.12.11/:${PYTHONPATH}
+    LD_LIBRARY_PATH=/opt/apps/python/3.12.11/lib:${LD_LIBRARY_PATH}
+fi
+
 rpmsystem=$(hostname)
 rpmsystem=${rpmsystem#*.} # remove build or staff
 rpmsystem=${rpmsystem%%.*} # remove tacc.utexas.edu
