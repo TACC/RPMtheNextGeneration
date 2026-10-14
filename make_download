@@ -52,8 +52,12 @@ if [ ! -d ${scripts}/makefiles/$package ] ; then
     exit 1
 fi
 
+#
+# find MrPackMod
+#
 export PATH=$(pwd)/MrPackMod:${PATH}
 export PYTHONPATH=$(pwd):${PYTHONPATH}
+
 cd ${scripts}/makefiles/$package
 
 # From now on only MrPackMod installations
@@ -73,12 +77,12 @@ fi
     
 
 DOWNLOADPATH=${rpms}/SOURCES \
- TACC_FAMILY_COMPILER=intel \
- PACKAGEROOT=${rpms} PACKAGE=${package} \
- PACKAGEVERSION=${pkgversion} \
- PACKAGEVERSION_DOWNLOAD=${downloadversion} \
- mpm.py -t \
-     $( if [ ! -z "${configuration}" ] ; then echo "-c ${configuration}" ; fi ) \
-     download unpack retar
+    TACC_FAMILY_COMPILER=intel \
+    PACKAGEROOT=${rpms} PACKAGE=${package} \
+    PACKAGEVERSION=${pkgversion} \
+    PACKAGEVERSION_DOWNLOAD=${downloadversion} \
+    mpm.py -t \
+        $( if [ ! -z "${configuration}" ] ; then echo "-c ${configuration}" ; fi ) \
+        download unpack retar
 
 

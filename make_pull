@@ -37,11 +37,17 @@ if [ ! -d ${scripts}/makefiles/$package ] ; then
     exit 1
 fi
 
+#
+# Find MrPackMod
+#
+export PATH=$(pwd)/MrPackMod:${PATH}
+export PYTHONPATH=$(pwd):${PYTHONPATH}
+
 cd ${scripts}/makefiles/$package
 DOWNLOADPATH=${rpms}/SOURCES \
-     TACC_FAMILY_COMPILER=intel \
-     PACKAGEROOT=${rpms} PACKAGE=${package} \
-    $( if [ ! -z "${version}" ] ; then echo "PACKAGEVERSION=${version}" ; fi ) \
+    TACC_FAMILY_COMPILER=intel \
+    PACKAGEROOT=${rpms} PACKAGE=${package} \
+    PACKAGEVERSION=${version} \
     mpm.py -t \
         $( if [ ! -z "${configuration}" ] ; then echo "-c ${configuration}" ; fi ) \
         newclone betar
