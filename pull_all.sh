@@ -6,6 +6,10 @@
 ## with Victor's MrPackMod
 ##
 
+##
+## First update local scripts
+##
+git stash && git pull
 
 ##
 ## Installer package
