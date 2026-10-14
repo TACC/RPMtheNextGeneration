@@ -1,9 +1,12 @@
 #!/bin/bash
 # -*- sh -*-
 
-if [ $# -eq 0 ] ; then
-   echo "Usage: make_pull [ -v version (default: git) ] package"
-   exit 0
+function usage () {
+   echo "Usage: make_pull [ -c configuration ] [ -v version (default: git) ] package"
+}
+
+if [ $# -eq 0 -o "$1" = "-h" ] ; then
+    usage && exit 0
 fi
 
 rpmsystem=$(hostname)
@@ -11,9 +14,17 @@ rpmsystem=${rpmsystem#*.} # remove build or staff
 rpmsystem=${rpmsystem%%.*} # remove tacc.utexas.edu
 
 version=git
-if [ $1 = "-v" ] ; then
-    shift && version=$1 && shift
-fi
+configuration=
+zip=0
+while [ $# -gt 1 ] ; do
+    if [ "$1" = "-h" ] ; then
+        usage && exit 0
+    elif [ "$1" = "-c" ] ; then
+        shift && configuration=$1 && shift
+    elif [ "$1" = "-v" ] ; then
+        shift && version=$1 && shift
+    fi
+done
 
 ## set -x
 package=$1
@@ -27,11 +38,13 @@ if [ ! -d ${scripts}/makefiles/$package ] ; then
 fi
 
 cd ${scripts}/makefiles/$package
-make DOWNLOADPATH=${rpms}/SOURCES \
-    MAKEINCLUDES=${scripts}/make-support-files \
-    PACKAGEROOT=${rpms} \
+DOWNLOADPATH=${rpms}/SOURCES \
+     TACC_FAMILY_COMPILER=intel \
+     PACKAGEROOT=${rpms} PACKAGE=${package} \
     $( if [ ! -z "${version}" ] ; then echo "PACKAGEVERSION=${version}" ; fi ) \
-    newclone betar
+    mpm.py -t \
+        $( if [ ! -z "${configuration}" ] ; then echo "-c ${configuration}" ; fi ) \
+        newclone betar
 
 # cd $sources
 # rightnow=$( date +%Y%m%d )
